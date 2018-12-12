@@ -15,14 +15,15 @@ class Page {
 		"data"=>[]
 	];
 
-	public function __construct($opts = array())
+	public function __construct($opts = array(), $tpl_dir = "/views/")
 	{
 
 		$this->options = array_merge($this->defaults, $opts);
 
 		$config = array(
 		    "base_url"      => null,
-		    "tpl_dir"       => $_SERVER['DOCUMENT_ROOT']."/projeto-ecommerce/"."views/",
+		    "tpl_dir"       => $_SERVER['DOCUMENT_ROOT']."/projeto-ecommerce".$tpl_dir,
+
 		    "cache_dir"     => $_SERVER['DOCUMENT_ROOT']."/projeto-ecommerce/"."views-cache/",
 		    "debug"         => false
 		);
