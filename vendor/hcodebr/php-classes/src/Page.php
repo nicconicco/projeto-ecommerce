@@ -20,13 +20,24 @@ class Page {
 
 		$this->options = array_merge($this->defaults, $opts);
 
+		// Com virtual host : ir em httpd.conf -> # Virtual hosts
+										//Include etc/extra/httpd-vhosts.conf
 		$config = array(
 		    "base_url"      => null,
-		    "tpl_dir"       => $_SERVER['DOCUMENT_ROOT']."/projeto-ecommerce".$tpl_dir,
+		    "tpl_dir"       => $_SERVER['DOCUMENT_ROOT'].$tpl_dir,
 
-		    "cache_dir"     => $_SERVER['DOCUMENT_ROOT']."/projeto-ecommerce/"."views-cache/",
+		    "cache_dir"     => $_SERVER['DOCUMENT_ROOT']."views-cache/",
 		    "debug"         => false
 		);
+
+
+		// $config = array(
+		//     "base_url"      => null,
+		//     "tpl_dir"       => $_SERVER['DOCUMENT_ROOT']."/ecommerce".$tpl_dir,
+
+		//     "cache_dir"     => $_SERVER['DOCUMENT_ROOT']."/ecommerce"."views-cache/",
+		//     "debug"         => false
+		// );
 
 		Tpl::configure( $config );
 
@@ -34,13 +45,13 @@ class Page {
 
 		$this->setData($this->options['data']);
 
-		$this->tpl->draw("header", false);
+		if ($this->options["header"] === true) $this->tpl->draw("header", false);
 
 	}
 
 	public function __destruct()
 	{
-		$this->tpl->draw("footer", false);
+		if ($this->options["footer"] === true) $this->tpl->draw("footer", false);
 	}
 
 	private function setData($data = array())
