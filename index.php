@@ -13,6 +13,8 @@ $app = new Slim();
 
 $app->config('debug', true);
 
+
+// home
 $app->get('/', function() {
     
 	$page = new Page();
@@ -21,6 +23,7 @@ $app->get('/', function() {
 
 });
 
+// admin
 $app->get('/admin', function() {
 
 	User::verifyLogin();
@@ -31,6 +34,7 @@ $app->get('/admin', function() {
 
 });
 
+// Login admin get
 $app->get('/admin/login', function() {
 	
 	$page = new PageAdmin([
@@ -41,6 +45,16 @@ $app->get('/admin/login', function() {
 	$page->setTpl("login");
 });
 
+// Login admin post
+$app->post('/admin/login', function() {
+
+	User::login($_POST["login"], $_POST["password"]);
+
+	header("Location: /admin");
+	exit;
+});
+
+// Logout admin
 $app->get('/admin/logout', function(){
 	
 	User::logout();
@@ -49,12 +63,66 @@ $app->get('/admin/logout', function(){
 	exit;
 });
 
-$app->post('/admin/login', function() {
+// Admin users
+$app->get("/admin/users", function(){
+	
+	User::verifyLogin();
 
-	User::login($_POST["login"], $_POST["password"]);
+	$users = User::listAll(); 
 
-	header("Location: /admin");
-	exit;
+	$page = new PageAdmin();
+
+	$page->setTpl("users", array(
+		"users"=>$users
+	));
+});
+
+
+$app->get('/admin/users/create', function() {
+
+	User::verifyLogin();
+
+	$page = new PageAdmin();
+
+	$page->setTpl("users-create");
+
+});
+
+$app->get('/admin/users/:iduser/delete', function() {
+
+	User::verifyLogin();
+
+	$page = new PageAdmin();
+
+	$page->setTpl("users-create");
+
+});
+
+$app->get('/admin/users/:iduser', function($iduser) {
+
+	User::verifyLogin();
+
+	$page = new PageAdmin();
+
+	$page->setTpl("users-update");
+
+});
+
+$app->post('/admin/users/:iduser', function($iduser) {
+
+	User::verifyLogin();
+
+
+});
+
+$app->post('/admin/users/create', function($iduser) {
+
+	User::verifyLogin();
+
+	$page = new PageAdmin();
+
+	$page->setTpl("users-create");
+
 });
 
 $app->run();
