@@ -31,7 +31,8 @@ class User extends Model {
 		// {
 
 
-		if ($password == $data["despassword"]) {
+		// if ($password == $data["despassword"]) {
+		if (password_verify($password, $data["despassword"]) === true ) {
 		// if($_POST["inadmin"] = (isset($_POST["inadmin"])) ? 1 : 0) {
 			$user = new User();
 
@@ -73,6 +74,59 @@ class User extends Model {
 		$sql = new Sql();
 
 		return $sql->select("SELECT * FROM tb_users a INNER JOIN tb_persons b USING(idperson) ORDER BY b.desperson");
+	}
+
+	public function save() 
+	{
+		$sql = new Sql();
+
+		$results = $sql->select("CALL sp_users_save(:desperson, :deslogin, :despassword, :desemail, :nrphone, :inadmin)", array(
+			":desperson"=>$this->getdesperson(),
+			":deslogin"=>$this->getdeslogin(),
+			":despassword"=>$this->getdespassword(),
+			":desemail"=>$this->getdesemail(),
+			":nrphone"=>$this->getnrphone(),
+			":inadmin"=>$this->getinadmin()
+		));
+
+		$this->setData($results[0]);
+	}
+
+	public function get($iduser) 
+	{
+		$sql = new Sql();
+
+		$results = $sql->select("SELECT * FROM tb_users a INNER JOIN tb_persons b USING(idperson) WHERE a.iduser = :iduser", array(
+			":iduser"=>$iduser
+		));
+
+		$this->setData($results[0]);
+	}
+
+	public function update() 
+	{
+		$sql = new Sql();
+
+		$results = $sql->select("CALL sp_userupdate_save(:iduser, :desperson, :deslogin, :despassword, :desemail, :nrphone, :inadmin)", array(
+			":iduser"=>$this->getiduser(),
+			":desperson"=>$this->getdesperson(),
+			":deslogin"=>$this->getdeslogin(),
+			":despassword"=>$this->getdespassword(),
+			":desemail"=>$this->getdesemail(),
+			":nrphone"=>$this->getnrphone(),
+			":inadmin"=>$this->getinadmin()
+		));
+
+		$this->setData($results[0]);
+	}
+
+	public function delete()
+	{
+		$sql = new Sql();
+
+		$sql->query("CALL sp_users_delete(:iduser",array(
+			":iduser"=>$this->getiduser()
+		));
 	}
 }
 
