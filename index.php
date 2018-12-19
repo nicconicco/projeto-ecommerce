@@ -13,7 +13,6 @@ $app = new Slim();
 
 $app->config('debug', true);
 
-
 // home
 $app->get('/', function() {
     
@@ -97,6 +96,27 @@ $app->post('/admin/users/create', function() {
 
 });
 
+// UPDATE POST
+//---------------------------------------------------//
+$app->post('/admin/users/:iduser', function($iduser) {
+
+	User::verifyLogin();
+
+	$user = new User();
+
+	$_POST["inadmin"] = (isset($_POST["inadmin"])) ? 1:0 ;
+
+	$user->get((int)$iduser);
+
+	$user->setData($_POST);
+
+	$user->update();
+	
+	header("Location: /admin/users");
+	exit;
+});
+
+
 $app->get('/admin/users/create', function() {
 
 	User::verifyLogin();
@@ -126,25 +146,6 @@ $app->get('/admin/users/:iduser/delete', function($iduser) {
 
 });
 
-// UPDATE POST
-//---------------------------------------------------//
-$app->post('/admin/users/:iduser', function($iduser) {
-
-	User::verifyLogin();
-
-	$user = new User();
-
-	$_POST["inadmin"] = (isset($_POST["inadmin"]))?1:0;
-
-	$user->get((int)$iduser);
-
-	$user->setData($_POST);
-
-	$user->update();
-
-});
-
-
 // UPDATE GET
 //---------------------------------------------------//
 $app->get('/admin/users/:iduser', function($iduser) {
@@ -164,6 +165,8 @@ $app->get('/admin/users/:iduser', function($iduser) {
 	));
 
 });
+
+
 
 $app->run();
 
